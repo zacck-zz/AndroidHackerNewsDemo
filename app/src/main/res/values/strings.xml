@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">AndroidHackerNewsDemo</string>
+    <string name="title_activity_web_view">Your Article</string>
 </resources>
