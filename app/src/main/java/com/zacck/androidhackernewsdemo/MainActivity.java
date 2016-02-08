@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -29,6 +31,9 @@ public class MainActivity extends AppCompatActivity {
     Map<Integer, String> articleTitles = new HashMap<Integer, String>();
     ArrayList<Integer> ArticleIds = new ArrayList<Integer>();
 
+    ArrayList<String> mTitles = new ArrayList<String>();
+    ArrayAdapter mAdp;
+
     //get a Database
     SQLiteDatabase mArticleDb;
 
@@ -37,6 +42,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //setup Ui
+        ListView mArticlesListView = (ListView)findViewById(R.id.articlesList);
+        mAdp = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mTitles);
+        mArticlesListView.setAdapter(mAdp);
         mArticleDb = this.openOrCreateDatabase("ArticlesDB", MODE_PRIVATE, null);
 
         mArticleDb.execSQL("CREATE TABLE IF NOT EXISTS articles(id INTEGER PRIMARY KEY, articleId INTEGER, url VARCHAR, title VARCHAR, content VARCHAR)");
@@ -83,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             //check db writes worked
-            Cursor mArticleCursor = mArticleDb.rawQuery("SELECT * FROM articles", null);
+            Cursor mArticleCursor = mArticleDb.rawQuery("SELECT * FROM articles ORDER BY articleId DESC", null);
 
             int articleIdIndex = mArticleCursor.getColumnIndex("articleId");
             int urlIndex = mArticleCursor.getColumnIndex("url");
@@ -92,11 +102,13 @@ public class MainActivity extends AppCompatActivity {
             mArticleCursor.moveToFirst();
             while (mArticleCursor != null )
             {
+                mTitles.add(mArticleCursor.getString(titleIndex));
                 Log.i("articleResults", Integer.toString(mArticleCursor.getInt(articleIdIndex)));
                 Log.i("articleResults", mArticleCursor.getString(urlIndex));
                 Log.i("articleResults", mArticleCursor.getString(titleIndex));
                 mArticleCursor.moveToNext();
             }
+            mAdp.notifyDataSetChanged();
 
 
 
