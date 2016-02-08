@@ -25,7 +25,6 @@ public class WebViewActivity extends AppCompatActivity {
         String url = mIntent.getStringExtra("articleUrl");
         String content = mIntent.getStringExtra("content");
 
-        //mWebView.loadData(content,"text/html","UTF-8");
         mWebView.loadUrl(url);
 
 
